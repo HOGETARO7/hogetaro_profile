@@ -1,0 +1,60 @@
+
+
+AWSTemplateFormatVersion: "2010-09-09"  
+
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: "Project Name Prefix"
+        Parameters:
+          - PJPrefix
+
+Parameters:
+  PJPrefix:
+    Type: String
+  MyIP:
+    Description: IP address allowed to access EC2
+    Type: String
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Default: yama-test
+
+Resources:
+  ## 全てのIPアドレスから８０ポートへアクセス許可する
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Web server
+      GroupName: web     
+      VpcId: { "Fn::ImportValue": !Sub "${PJPrefix}-vpc" }
+      SecurityGroupIngress:
+        -
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref MyIP
+
+  WebInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0ca38c7440de1749a
+      KeyName: !Ref KeyName
+   ## keyNameは既存で発行済みにキーを使う時利用する
+      Monitoring: true
+      SecurityGroupIds:
+        - !Ref WebSecurityGroup
+      SubnetId: { "Fn::ImportValue": !Sub "${PJPrefix}-public-subnet-a" }
+      Tags:
+        -
+          Key: Name
+          Value: sctvーwebserver     
+
+  ## インスタンスにElastic IPをアタッチする
+  WebElasticIp:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref WebInstance
+      Domain: vpc
