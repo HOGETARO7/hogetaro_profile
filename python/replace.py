@@ -10,8 +10,8 @@ import sys
 import glob
 
 ###変数定義
-filename1 = r'replace/test.bat'
-filename2 = r'replace/test2.bat'
+filename1 = r'replace/test.ps1'
+filename2 = r'replace/test2.ps1'
 str_be1 = '@@@backet_name'
 str_be2 = '@@@test'
 str_af = ''
