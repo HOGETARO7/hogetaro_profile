@@ -1,12 +1,22 @@
-
 import boto3
-
-region = 'ap-northeast-1'
+import json
 
 def lambda_handler(event, context):
+    """
+    Make list of current instances.
+    """
+    ec2 = boto3.client('ec2')
+    instances = ec2.describe_instances()
+    
+    #インスタンス情報取得
+    for reservations in instances['Reservations']:
+        for instance in reservations['Instances']:
+            
+            #インスタンスIDの取得
+            target = instance['InstanceId']
 
-    ec2 = boto3.client('ec2', region_name=region)
-    responce = ec2.describe_instances()
-
-    ec2.stop_instances(InstanceIds=responce)
-    print('stopped instances: ' + str(instances))
+            #インスタンスIDの型をリスト型に変換
+            target = [target]
+            
+            #インスタンスを停止する
+            ec2.stop_instances(InstanceIds=target)
