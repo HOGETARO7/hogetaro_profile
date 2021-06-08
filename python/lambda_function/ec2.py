@@ -12,7 +12,7 @@ def lambda_handler(event, context):
     for reservations in instances['Reservations']:
         for instance in reservations['Instances']:
             
-            #インスタンスIDの取得
+            #インスタンスIDを変数に格納
             target = instance['InstanceId']
 
             #インスタンスIDの型をリスト型に変換
