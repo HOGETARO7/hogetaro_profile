@@ -19,7 +19,7 @@ Parameters:
   KeyName:
     Description: The EC2 Key Pair to allow SSH access to the instance
     Type: "AWS::EC2::KeyPair::KeyName"
-    Default: yama-test
+    Default: test
 
 Resources:
   ## 全てのIPアドレスから８０ポートへアクセス許可する
